@@ -1,0 +1,4 @@
+ActiveRecord::Collection
+
+Lazy-loaded Array-like collections of ActiveRecords.
+Compatible with will_paginate.
