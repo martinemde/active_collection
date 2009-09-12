@@ -1,4 +1,4 @@
-ActiveRecord::Collection
+ActiveCollection
 
-Lazy-loaded Array-like collections of ActiveRecords.
+Lazy-loaded Array-like collections of Records.
 Compatible with will_paginate.
