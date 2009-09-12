@@ -1,0 +1,8 @@
+= ActiveCollection
+
+Lazy-loaded Array-like collections of records.
+Compatible with will_paginate.
+
+== Copyright
+
+Copyright (c) 2009 Martin Emde. See LICENSE for details.
