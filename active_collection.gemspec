@@ -5,16 +5,35 @@
 
 Gem::Specification.new do |s|
   s.name = %q{active_collection}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Martin Emde"]
-  s.date = %q{2009-09-12}
+  s.date = %q{2009-09-14}
   s.description = %q{Lazy-loaded array of records}
   s.email = %q{martin.emde@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
      "README.rdoc"
+  ]
+  s.files = [
+    ".document",
+     ".gitignore",
+     "LICENSE",
+     "README.rdoc",
+     "Rakefile",
+     "VERSION.yml",
+     "active_collection.gemspec",
+     "lib/active_collection.rb",
+     "lib/active_collection/base.rb",
+     "lib/active_collection/includes.rb",
+     "lib/active_collection/order.rb",
+     "lib/active_collection/pagination.rb",
+     "lib/active_collection/scope.rb",
+     "spec/active_collection_spec.rb",
+     "spec/pagination_spec.rb",
+     "spec/spec.opts",
+     "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/martinemde/active_collection}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -23,6 +42,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Lazy-loaded array of records}
   s.test_files = [
     "spec/active_collection_spec.rb",
+     "spec/pagination_spec.rb",
      "spec/spec_helper.rb"
   ]
 
