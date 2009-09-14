@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{active_collection}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Martin Emde"]
   s.date = %q{2009-09-14}
-  s.description = %q{Lazy-loaded array of records}
+  s.description = %q{A lazy-loading, Array-like collection proxy for ActiveRecord that understands conditions and paging.}
   s.email = %q{martin.emde@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{collection}
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Lazy-loaded array of records}
+  s.summary = %q{A lazy-loading, Array-like collection proxy for ActiveRecord that understands conditions and paging.}
   s.test_files = [
     "spec/active_collection_spec.rb",
      "spec/pagination_spec.rb",
