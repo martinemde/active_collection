@@ -11,7 +11,11 @@ begin
     gem.homepage = "http://github.com/martinemde/active_collection"
     gem.authors = ["Martin Emde"]
     gem.add_development_dependency "rspec"
+    gem.rubyforge_project = "collection"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+  Jeweler::RubyforgeTasks.new do |rubyforge|
+    rubyforge.doc_task = "rdoc"
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"

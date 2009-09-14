@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/martinemde/active_collection}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.rubyforge_project = %q{collection}
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Lazy-loaded array of records}
   s.test_files = [
