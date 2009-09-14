@@ -79,7 +79,10 @@ module ActiveCollection
       end
 
       def to_options(object)
-        inject({}) { |h, callback| h.merge( callback.call(object) ) }
+        inject({}) do |h, callback|
+          res = callback.call(object)
+          res ? h.merge(res) : h
+        end
       end
 
       private

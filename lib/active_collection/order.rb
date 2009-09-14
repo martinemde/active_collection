@@ -24,7 +24,7 @@ module ActiveCollection
     end
 
     def order_options
-      order ? { :order => order } : {}
+      { :order => order } if order
     end
 
     module ClassMethods

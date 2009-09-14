@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "active_collection"
-    gem.summary = %Q{Lazy-loaded array of records}
-    gem.description = %Q{Lazy-loaded array of records}
+    gem.summary = %{A lazy-loading, Array-like collection proxy for ActiveRecord that understands conditions and paging.}
+    gem.description = %{A lazy-loading, Array-like collection proxy for ActiveRecord that understands conditions and paging.}
     gem.email = "martin.emde@gmail.com"
     gem.homepage = "http://github.com/martinemde/active_collection"
     gem.authors = ["Martin Emde"]

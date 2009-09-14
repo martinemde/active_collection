@@ -34,7 +34,7 @@ module ActiveCollection
     end
 
     def include_options
-      @includes.blank?? {} : { :include => @includes }
+      { :include => @includes } unless @includes.blank?
     end
 
     protected

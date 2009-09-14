@@ -182,7 +182,7 @@ module ActiveCollection
 
     # Find options for pagination.
     def pagination_options
-      paginated?? { :offset => offset, :limit => per_page } : {}
+      { :offset => offset, :limit => per_page } if paginated?
     end
 
   end
