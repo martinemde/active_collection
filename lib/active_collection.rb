@@ -4,6 +4,7 @@ require 'active_support'
 
 module ActiveCollection
   autoload :Base, 'active_collection/base'
+  autoload :MemberClass, 'active_collection/member_class'
   autoload :Scope, 'active_collection/scope'
   autoload :Order, 'active_collection/order'
   autoload :Includes, 'active_collection/includes'

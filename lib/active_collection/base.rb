@@ -37,30 +37,6 @@ module ActiveCollection
       proxy_respond_to?(*args) || collection.respond_to?(*args)
     end
 
-    def self.model_class
-      @model_class ||= name.sub(/Collection$/,'').constantize
-    end
-
-    def model_class
-      self.class.model_class
-    end
-
-    def self.table_name
-      model_class.table_name
-    end
-
-    def table_name
-      self.class.table_name
-    end
-
-    def self.human_name
-      table_name.gsub(/_/,' ')
-    end
-
-    def human_name
-      self.class.human_name
-    end
-
     # Forwards <tt>===</tt> explicitly to the collection because the instance method
     # removal above doesn't catch it. Loads the collection if needed.
     def ===(other)
@@ -191,22 +167,10 @@ module ActiveCollection
     def raise_if_loaded
       raise AlreadyLoadedError, "Cannot modify a collection that has already been loaded." if loaded?
     end
-
-    # Extracted from AR:B
-    # Object#to_a is deprecated, though it does have the desired behavior
-    def safe_to_array(o)
-      case o
-      when NilClass
-        []
-      when Array
-        o
-      else
-        [o]
-      end
-    end
   end
 
   Base.class_eval do
+    include MemberClass
     include Scope
     include Includes, Order, Pagination
   end

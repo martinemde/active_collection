@@ -4,10 +4,17 @@ class BeerCollection < ActiveCollection::Base
 end
 
 class Beer
+  def self.human_name(*args)
+    "Beer"
+  end
 end
 
 describe ActiveCollection do
   subject { BeerCollection.new }
+
+  it "passes human_name to the member class and then pluralizes" do
+    subject.human_name(:locale => 'en-us').should == "Beers"
+  end
 
   context "(empty)" do
     describe "(count methods)" do
