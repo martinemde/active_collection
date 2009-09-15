@@ -59,6 +59,14 @@ describe ActiveCollection do
       it "is on page 2" do
         subject.current_page.should == 2
       end
+
+      it "is empty" do
+        subject.should be_empty
+      end
+
+      it "has 0 size" do
+        subject.size.should == 0
+      end
     end
   end
 

@@ -31,7 +31,13 @@ module ActiveCollection
     # Loads total entries and calculates the size from that.
     def size_with_pagination
       if paginated?
-        last_page?? size_without_pagination % per_page : per_page
+        if out_of_bounds?
+          0
+        elsif last_page?
+          size_without_pagination % per_page
+        else
+          per_page
+        end
       else
         size_without_pagination
       end
@@ -92,7 +98,7 @@ module ActiveCollection
     # 
     # may load total_entries if not already loaded.
     def last_page?
-      next_page.nil?
+      !out_of_bounds? && next_page.nil?
     end
 
     # New Collection for current_page - 1 or nil.
