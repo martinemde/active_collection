@@ -9,6 +9,7 @@ module ActiveCollection
   autoload :Order, 'active_collection/order'
   autoload :Includes, 'active_collection/includes'
   autoload :Pagination, 'active_collection/pagination'
+  autoload :Serialization, 'active_collection/serialization'
 
   Base
 end

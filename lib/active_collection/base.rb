@@ -51,36 +51,6 @@ module ActiveCollection
       end
     end
 
-    # Turn the params into a hash suitable for passing the collection directly as an arg to a named path.
-    def to_param
-      params.empty?? nil : params.to_param
-    end
-
-    def as_data_hash
-      data_hash = { "collection" => collection.as_json }
-      data_hash["total_entries"] = total_entries
-      data_hash
-    end
-
-    def to_xml(options = {})
-      collect
-      options[:indent] ||= 2
-      xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
-      xml.instruct! unless options[:skip_instruct]
-      xml.tag!(table_name) do
-        xml.total_entries(total_entries, :type => "integer")
-        xml.collection(:type => "array") do
-          collection.each do |item|
-            item.to_xml(:indent => options[:indent], :builder => xml, :skip_instruct => true)
-          end
-        end
-      end
-    end
-
-    def as_json(options = nil)
-      {table_name => as_data_hash}.as_json(options)
-    end
-
     # Implements Enumerable
     def each(&block)
       collection.each(&block)
@@ -172,6 +142,6 @@ module ActiveCollection
   Base.class_eval do
     include MemberClass
     include Scope
-    include Includes, Order, Pagination
+    include Includes, Order, Pagination, Serialization
   end
 end
