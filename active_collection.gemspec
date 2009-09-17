@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{active_collection}
-  s.version = "0.2.2"
+  s.version = "0.2.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Martin Emde"]
-  s.date = %q{2009-09-14}
+  s.date = %q{2009-09-16}
   s.description = %q{A lazy-loading, Array-like collection proxy for ActiveRecord that understands conditions and paging.}
   s.email = %q{martin.emde@gmail.com}
   s.extra_rdoc_files = [
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION.yml",
+     "active_collection.gemspec",
      "lib/active_collection.rb",
      "lib/active_collection/base.rb",
      "lib/active_collection/includes.rb",
@@ -30,6 +31,7 @@ Gem::Specification.new do |s|
      "lib/active_collection/order.rb",
      "lib/active_collection/pagination.rb",
      "lib/active_collection/scope.rb",
+     "lib/active_collection/serialization.rb",
      "spec/active_collection_spec.rb",
      "spec/pagination_spec.rb",
      "spec/spec.opts",
