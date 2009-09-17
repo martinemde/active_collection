@@ -6,31 +6,31 @@ end
 class Beer
 end
 
-describe "an empty collection", :shared => true do
-  it "is empty" do
-    subject.should be_empty
-  end
-
-  it "has 0 total entries" do
-    subject.total_entries.should == 0
-  end
-
-  it "has 0 total_pages" do
-    subject.total_pages.should == 0
-  end
-
-  it "has length of 0" do
-    subject.length.should == 0
-  end
-
-  it "yields no items on each" do
-    count = 0
-    subject.each { |i| count += 1 }
-    count.should == 0
-  end
-end
-
 describe ActiveCollection do
+  describe "an empty collection", :shared => true do
+    it "is empty" do
+      subject.should be_empty
+    end
+
+    it "has 0 total entries" do
+      subject.total_entries.should == 0
+    end
+
+    it "has 0 total_pages" do
+      subject.total_pages.should == 0
+    end
+
+    it "has length of 0" do
+      subject.length.should == 0
+    end
+
+    it "yields no items on each" do
+      count = 0
+      subject.each { |i| count += 1 }
+      count.should == 0
+    end
+  end
+
   subject { BeerCollection.new(:page => 1) }
 
   context "(empty)" do
