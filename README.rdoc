@@ -3,6 +3,39 @@
 Lazy-loaded Array-like collections of records.
 Compatible with will_paginate.
 
+== Example
+
+A quick example:
+
+If you have a model
+
+    class Beer < ActiveRecord::Base
+    end
+
+You can make ActiveCollections of Beers like so:
+
+    class BeerCollection < ActiveCollection::Base
+
+      scope :geolocation
+      order_by "distance ASC"
+
+      def geolocation
+        { :origin => [params[:lat], params[:lng]], :within => params[:radius] || 50 }
+      end
+    end
+
+    beers = BeerCollection.new(:lat => 38.1234, :lng => -117.6543)
+
+    # All of these are lazy loaded only when they're needed.
+    beers.size # => Beer.count(:origin => ..., :within => ...)
+    beers.each # calls Beer.all(:origin => ..., :within => ..., :order => "distance ASC") and yields each record
+    paginated_beers = beers.paginate
+    paginated_beers.size # => size of this page only
+    paginated_beers.total_entries # => size of the entire collection
+    paginated_beers.total_pages # => will_paginate compatible all the way.
+
+The active collection functions a lot like a has_many association proxy in Active Record.
+
 == Copyright
 
 Copyright (c) 2009 Martin Emde. See LICENSE for details.
