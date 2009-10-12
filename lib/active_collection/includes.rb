@@ -19,18 +19,18 @@ module ActiveCollection
     end
 
     def includes
-      @includes = self.class.default_includes
+      @includes ||= self.class.default_includes
     end
 
-    def include(*includes)
-      ac = dup
-      ac.include! *includes
+    def include(*new_includes)
+      ac = unloading_dup
+      ac.include! *new_includes
       ac
     end
 
-    def include!(*includes)
+    def include!(*new_includes)
       raise_if_loaded
-      @includes = (safe_to_array(includes) + safe_to_array(includes)).uniq
+      @includes = (safe_to_array(new_includes) + safe_to_array(includes)).uniq
     end
 
     def include_options

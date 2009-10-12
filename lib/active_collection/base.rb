@@ -51,14 +51,17 @@ module ActiveCollection
       end
     end
 
+    # dup that doesn't include the collection if it's loaded
+    def unloading_dup
+      d = super
+      d.unload!
+      yield d if block_given?
+      d
+    end
+
     # Implements Enumerable
     def each(&block)
       collection.each(&block)
-    end
-
-    # Grab the raw collection.
-    def all
-      collection
     end
 
     # The emptiness of the collection (limited by query and pagination)
@@ -69,11 +72,13 @@ module ActiveCollection
     # The size of the collection (limited by query and pagination)
     #
     # It will avoid using a count query if the collection is already loaded.
+    #
+    # (Note that the paginated count is added in the pagination module)
     def size
-      loaded?? collection.size : total_entries
+      loaded?? length : total_entries
     end
 
-    # Always returns the total count regardless of pagination.
+    # Always returns the total count of all records that can be in this collection.
     def total_entries
       @total_entries ||= load_count
     end
@@ -88,6 +93,10 @@ module ActiveCollection
     # true if the collection data has been loaded
     def loaded?
       !!@collection
+    end
+
+    def unload!
+      @collection = nil
     end
 
     protected
@@ -112,16 +121,6 @@ module ActiveCollection
     # and over and over again.
     def collection
       @collection ||= load_collection
-    end
-
-    # Overload this method to add extra find options.
-    #
-    # :offset and :limit will be overwritten by the pagination_options if the
-    # collection is paginated, because you shouldn't be changing the paging
-    # directly if you're working with a paginated collection
-    # 
-    def query_options
-      {}
     end
 
     def load_count

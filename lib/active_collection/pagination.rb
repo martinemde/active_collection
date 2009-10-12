@@ -131,7 +131,7 @@ module ActiveCollection
 
     # Total number of pages.
     def total_pages
-      @total_pages ||= (total_entries / per_page.to_f).ceil
+      (total_entries / per_page.to_f).ceil
     end
 
     # return a paginated collection if it isn't already paginated.
@@ -153,6 +153,7 @@ module ActiveCollection
       current_page && current_page > 0
     end
 
+    # TODO clean this up
     def as_data_hash
       data_hash = { "collection" => collection.as_json }
       if paginated?
@@ -164,6 +165,7 @@ module ActiveCollection
       data_hash
     end
 
+    # TODO clean this up
     def to_xml(options = {})
       collect
       options[:indent] ||= 2

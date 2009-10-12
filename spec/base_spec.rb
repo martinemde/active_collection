@@ -1,20 +1,16 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-class BeerCollection < ActiveCollection::Base
-end
-
 class Beer
   def self.human_name(*args)
     "Beer"
   end
 end
 
+class BeerCollection < ActiveCollection::Base
+end
+
 describe ActiveCollection do
   subject { BeerCollection.new }
-
-  it "passes human_name to the member class and then pluralizes" do
-    subject.human_name(:locale => 'en-us').should == "Beers"
-  end
 
   context "(empty)" do
     describe "(count methods)" do
@@ -28,6 +24,10 @@ describe ActiveCollection do
 
       it "has size of 0" do
         subject.size.should == 0
+      end
+
+      it "has total_entries of 0" do
+        subject.total_entries.should == 0
       end
     end
 
@@ -44,11 +44,6 @@ describe ActiveCollection do
         subject.length
         Beer.should_not_receive(:count)
         subject.should be_empty
-      end
-
-      it "doesn't load count after loading the collection" do
-        subject.length
-        Beer.should_not_receive(:count)
         subject.size.should == 0
       end
 
@@ -57,16 +52,16 @@ describe ActiveCollection do
         subject.each { |i| count += 1 }
         count.should == 0
       end
+
+      it "returns empty Array on to_a" do
+        subject.to_a.should == []
+      end
     end
   end
 
-  context "(simple collection with 5 records)" do
+  context "(with 5 records)" do
     def records
-      @records ||= begin
-                     beers = []
-                     5.times { beers << Beer.new }
-                     beers
-                   end
+      @records ||= (1..5).map { |i| Beer.new }
     end
 
     describe "(count methods)" do
@@ -98,11 +93,6 @@ describe ActiveCollection do
         subject.length
         Beer.should_not_receive(:count)
         subject.should_not be_empty
-      end
-
-      it "doesn't load count after loading the collection" do
-        subject.length
-        Beer.should_not_receive(:count)
         subject.size.should == 5
       end
 
@@ -110,6 +100,23 @@ describe ActiveCollection do
         count = 0
         subject.each { |i| count += 1 }
         count.should == 5
+      end
+
+      it "returns all objects in an Array on to_a" do
+        subject.to_a.should == records
+      end
+
+      it "loads the collection on length" do
+        subject.should_not be_loaded
+        subject.length
+        subject.should be_loaded
+      end
+
+      it "unloads a loaded collection on unload!" do
+        subject.to_a
+        subject.should be_loaded
+        subject.unload!
+        subject.should_not be_loaded
       end
     end
   end

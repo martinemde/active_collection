@@ -1,4 +1,5 @@
 require 'active_support/core_ext/array/extract_options'
+require 'active_support/core_ext/hash/deep_merge'
 
 module ActiveCollection
   module Scope
@@ -17,7 +18,7 @@ module ActiveCollection
     #     find_scope :awesome_beer_only
     #
     #     def awesome_beer_only
-    #       { :conditions => { :beer => 'awesome' } }
+    #       { :conditions => "beer = 'awesome'" }
     #     end
     #   end
     #
@@ -34,7 +35,7 @@ module ActiveCollection
     #     count_scope :awesome_beer_only
     #
     #     def awesome_beer_only
-    #       { :conditions => { :beer => 'awesome' } }
+    #       { :conditions => "beer = 'awesome'" }
     #     end
     #   end
     #
@@ -43,11 +44,11 @@ module ActiveCollection
     end
 
     module ClassMethods
-      def scope_for_find
+      def scopes_for_find
         ScopeBuilder.new(scope_builder + find_scope_builder)
       end
 
-      def scope_for_count
+      def scopes_for_count
         ScopeBuilder.new(scope_builder + count_scope_builder)
       end
 
@@ -85,7 +86,48 @@ module ActiveCollection
         end
       end
 
+      def join
+        hash = {}
+        each do |scope|
+          next if scope.blank?
+
+          (scope.keys + hash.keys).uniq.each do |key|
+            merge = hash[key] && params[key] # merge if both scopes have the same key
+
+            if key == :conditions && merge
+              hash[key] = if params[key].is_a?(Hash) && hash[key].is_a?(Hash)
+                            merge_conditions(hash[key].deep_merge(params[key]))
+                          else
+                            merge_conditions(params[key], hash[key])
+                          end
+            elsif key == :include && merge
+              hash[key] = merge_includes(hash[key], params[key]).uniq
+            elsif key == :joins && merge
+              hash[key] = merge_joins(params[key], hash[key])
+            else
+              hash[key] = hash[key] || params[key]
+            end
+          end
+        end
+
+        hash
+      end
+
       private
+        # Merges conditions so that the result is a valid +condition+
+        def self.merge_conditions(*conditions)
+          segments = []
+
+          conditions.each do |condition|
+            unless condition.blank?
+              sql = model_class.send(:sanitize_sql, condition)
+              segments << sql unless sql.blank?
+            end
+          end
+
+          "(#{segments.join(') AND (')})" unless segments.empty?
+        end
+
         def self.extract_options(*methods, &block)
           methods.flatten!
           options = methods.extract_options!

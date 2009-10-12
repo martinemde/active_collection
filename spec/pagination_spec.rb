@@ -6,31 +6,31 @@ end
 class Beer
 end
 
-describe ActiveCollection do
-  describe "an empty collection", :shared => true do
-    it "is empty" do
-      subject.should be_empty
-    end
-
-    it "has 0 total entries" do
-      subject.total_entries.should == 0
-    end
-
-    it "has 0 total_pages" do
-      subject.total_pages.should == 0
-    end
-
-    it "has length of 0" do
-      subject.length.should == 0
-    end
-
-    it "yields no items on each" do
-      count = 0
-      subject.each { |i| count += 1 }
-      count.should == 0
-    end
+describe "an empty collection", :shared => true do
+  it "is empty" do
+    subject.should be_empty
   end
 
+  it "has 0 total entries" do
+    subject.total_entries.should == 0
+  end
+
+  it "has 0 total_pages" do
+    subject.total_pages.should == 0
+  end
+
+  it "has length of 0" do
+    subject.length.should == 0
+  end
+
+  it "yields no items on each" do
+    count = 0
+    subject.each { |i| count += 1 }
+    count.should == 0
+  end
+end
+
+describe ActiveCollection do
   subject { BeerCollection.new(:page => 1) }
 
   context "(empty)" do
@@ -52,7 +52,7 @@ describe ActiveCollection do
 
       it_should_behave_like "an empty collection"
 
-      it "should be out of bounds" do
+      it "is out of bounds" do
         subject.should be_out_of_bounds
       end
 
@@ -70,7 +70,7 @@ describe ActiveCollection do
     end
   end
 
-  context "(simple collection with 5 records)" do
+  context "(with 5 records)" do
     def records
       @records ||= begin
                      beers = []
@@ -111,6 +111,16 @@ describe ActiveCollection do
           subject.empty?
           subject.size
           subject.total_entries
+        end
+
+        it "raises on attempt to force paginate after already loaded" do
+          subject.to_a
+          subject.should be_loaded
+          lambda { subject.paginate! }.should raise_error(ActiveCollection::AlreadyLoadedError)
+        end
+
+        it "returns the same record on 'soft' paginate when already paginated" do
+          subject.paginate.should == subject
         end
 
         it "yields 5 items to each" do
@@ -163,6 +173,7 @@ describe ActiveCollection do
           Beer.should_receive(:all).with(:limit => ActiveCollection::Base.per_page, :offset => 0).and_return(records)
           subject.length
         end
+
       end
     end
 
@@ -230,7 +241,7 @@ describe ActiveCollection do
         end
 
         it "calls count to find total_entries even when collection is loaded" do
-          subject.length
+          subject.to_a
           Beer.should_receive(:count).and_return(5)
           subject.total_entries.should == 5
         end

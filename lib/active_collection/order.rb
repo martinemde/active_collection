@@ -13,7 +13,7 @@ module ActiveCollection
     end
 
     def order_by(order)
-      ac = dup
+      ac = unloading_dup
       ac.order_by! order
       ac
     end
