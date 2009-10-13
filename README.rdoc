@@ -17,24 +17,56 @@ You can make ActiveCollections of Beers like so:
     class BeerCollection < ActiveCollection::Base
 
       scope :geolocation
+      scope :by_brewery
       order_by "distance ASC"
 
+      def names
+        map(&:name)
+      end
+
+      protected
+
       def geolocation
-        { :origin => [params[:lat], params[:lng]], :within => params[:radius] || 50 }
+        if params[:lat] && params[:lng]
+          { :origin => [params[:lat], params[:lng]], :within => params[:radius] || 50 }
+        end
+      end
+
+      def by_brewery
+        if params[:brewery_id]
+          { :conditions => { :brewery_id => params[:brewery_id] } }
+        end
       end
     end
 
     beers = BeerCollection.new(:lat => 38.1234, :lng => -117.6543)
 
     # All of these are lazy loaded only when they're needed.
-    beers.size # => Beer.count(:origin => ..., :within => ...)
-    beers.each # calls Beer.all(:origin => ..., :within => ..., :order => "distance ASC") and yields each record
-    paginated_beers = beers.paginate
-    paginated_beers.size # => size of this page only
-    paginated_beers.total_entries # => size of the entire collection
-    paginated_beers.total_pages # => will_paginate compatible all the way.
+    beers.size # => Beer.count(:origin => [38.1234, -117.6543], :within => 50)
+    beers.each # => Beer.all(:origin => [38.1234, -117.6543], :within => 50, :order => "distance ASC") and yields each record
 
-The active collection functions a lot like a has_many association proxy in Active Record.
+    # custom condition
+    brewery_beers = BeerCollection.new(:brewery_id => 1)
+    brewery_beers.to_a # Beer.all(:conditions => {:brewery_id => 1}) => [Beer, Beer, Beer, ...]
+    brewery_beers.size # Does not load count, just takes the size of the loaded collection.
+    brewery_beers.names # => ["La Folie", "1554", ...]
+
+    # paginated collection
+    paginated_beers = brewery_beers.paginate
+    paginated_beers.size # => size of this page only
+    paginated_beers.total_entries # => size of the entire collection without paging.
+    paginated_beers.total_pages # => will_paginate compatible all the way.
+    paginated_beers.next_page_collection # => new collection for page 2
+
+    # Includes
+    beers.include(:brewery) # => new collection that will eager load Brewery association when it loads.
+
+    # Includes can also be specified in the class
+    class BeerCollection < ActiveCollection::Base
+      includes :brewery => :owner
+
+      # ...
+    end
 
 == Copyright
 
