@@ -15,6 +15,11 @@ If you have a model
 You can make ActiveCollections of Beers like so:
 
     class BeerCollection < ActiveCollection::Base
+    end
+
+Or a more complex version:
+
+    class BeerCollection < ActiveCollection::Base
 
       scope :geolocation
       scope :by_brewery
@@ -39,34 +44,79 @@ You can make ActiveCollections of Beers like so:
       end
     end
 
+And you would use it like so:
+
     beers = BeerCollection.new(:lat => 38.1234, :lng => -117.6543)
 
     # All of these are lazy loaded only when they're needed.
     beers.size # => Beer.count(:origin => [38.1234, -117.6543], :within => 50)
     beers.each # => Beer.all(:origin => [38.1234, -117.6543], :within => 50, :order => "distance ASC") and yields each record
 
-    # custom condition
+==== Custom conditions
+
+You can specify anything you want for conditions using the scope, find_scope, and count_scope class methods. Conditions on the fly is on my road map.
+
     brewery_beers = BeerCollection.new(:brewery_id => 1)
     brewery_beers.to_a # Beer.all(:conditions => {:brewery_id => 1}) => [Beer, Beer, Beer, ...]
     brewery_beers.size # Does not load count, just takes the size of the loaded collection.
     brewery_beers.names # => ["La Folie", "1554", ...]
 
-    # paginated collection
-    paginated_beers = brewery_beers.paginate
-    paginated_beers.size # => size of this page only
-    paginated_beers.total_entries # => size of the entire collection without paging.
-    paginated_beers.total_pages # => will_paginate compatible all the way.
-    paginated_beers.next_page_collection # => new collection for page 2
+==== Pagination
 
-    # Includes
+ActiveCollections are fully will_paginate compliant.
+
+    paginated_beers = brewery_beers.paginate
+    paginated_beers.size # => size of this page only (doesn't query if already loaded)
+    paginated_beers.total_entries # => size of the entire collection without paging. (performs a database lookup if it can't be inferred by the collection size)
+    paginated_beers.total_pages
+    paginated_beers.next_page_collection # => new BeerCollection for page 2. Again, lazily-loaded.
+
+==== Includes
+
+Specify eager loading for a collection.
+
     beers.include(:brewery) # => new collection that will eager load Brewery association when it loads.
 
-    # Includes can also be specified in the class
+Includes can also be specified in the class along with order. Anything specified on the class will combine using active record's rules (merge includes, overwrite order).
+
     class BeerCollection < ActiveCollection::Base
       includes :brewery => :owner
+      order_by "name asc"
 
       # ...
     end
+
+== Usage
+
+I tend to use this in my index action in a controller by just passing in params.
+
+    def index
+      @beers = BeerCollection.new(params)
+    end
+
+It will automatically take care of paging. You can also pass the collection itself to the index named route to pass along the params necessary to link to the collection.
+
+    beers_path(@beers) # => Includes the right options for paging and any specified order or search query.
+
+== Coming Soon
+
+==== Search Integration
+
+This can already be done by overloading load_collection and load_count in your collection.
+
+I have sphinx and solr searching integrated on another project but I've yet to abstract it. Probably will work something like this:
+
+    BeerCollection.new(:q => "search term")
+
+and then you specify searchability like so:
+
+    class BeerCollection < ActiveCollection::Base
+      search_on :q, :using => :thinking_sphinx
+    end
+
+==== Geolocation Integration
+
+This can already be done as shown above, but I'd like it to be knowledgeable of the available geolocation libraries like Geokit and also support local search with solr and sphinx. 
 
 == Copyright
 
