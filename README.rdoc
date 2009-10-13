@@ -111,6 +111,8 @@ I have sphinx and solr searching integrated on another project but I've yet to a
 and then you specify searchability like so:
 
     class BeerCollection < ActiveCollection::Base
+      # It could possibly auto-configure by looking at what search libraries are loaded.
+      # Note: this doesn't exist yet.
       search_on :q, :using => :thinking_sphinx
     end
 

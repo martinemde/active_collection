@@ -63,6 +63,19 @@ module ActiveCollection
       @current_page = pg
     end
 
+    # return a paginated collection if it isn't already paginated.
+    # returns self if already paginated.
+    def paginate
+      paginated?? self : page(1)
+    end
+
+    # forces pagination of self, raising if already loaded.
+    # returns current_page if the collection is now paginated
+    # returns nil if already paginated
+    def paginate!
+      paginated?? nil : page!(1)
+    end
+
     # Helper method that is true when someone tries to fetch a page with a
     # larger number than the last page. Can be used in combination with flashes
     # and redirecting.
@@ -132,20 +145,6 @@ module ActiveCollection
     # Total number of pages.
     def total_pages
       (total_entries / per_page.to_f).ceil
-    end
-
-    # return a paginated collection if it isn't already paginated.
-    # returns self if already paginated.
-    def paginate
-      paginated?? self : page(current_page || 1)
-    end
-
-    # forces pagination of self, raising if already loaded.
-    # returns current_page if the collection is now paginated
-    # returns nil if already paginated
-    def paginate!
-      raise_if_loaded
-      current_page ? nil : @current_page = 1
     end
 
     # if the collection has a page parameter
