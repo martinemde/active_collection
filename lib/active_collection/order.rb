@@ -8,6 +8,16 @@ module ActiveCollection
       end
     end
 
+    module ClassMethods
+      def order_by(order = "id ASC")
+        @order = order
+      end
+
+      def default_order
+        @order || (superclass != ActiveCollection::Base && superclass.default_order) || nil
+      end
+    end
+
     def order
       @order ||= self.class.default_order
     end
@@ -24,17 +34,8 @@ module ActiveCollection
     end
 
     def order_options
-      { :order => order } if order
-    end
-
-    module ClassMethods
-      def order_by(order = "id ASC")
-        write_inheritable_attribute(:default_order, order)
-      end
-
-      def default_order
-        read_inheritable_attribute(:default_order) || nil
-      end
+      ord = @order || self.class.default_order
+      { :order => ord } if ord
     end
   end
 end

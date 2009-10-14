@@ -53,7 +53,7 @@ module ActiveCollection
 
     # dup that doesn't include the collection if it's loaded
     def unloading_dup
-      d = super
+      d = dup
       d.unload!
       yield d if block_given?
       d

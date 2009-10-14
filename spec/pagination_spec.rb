@@ -113,10 +113,10 @@ describe ActiveCollection do
           subject.total_entries
         end
 
-        it "raises on attempt to force paginate after already loaded" do
+        it "raises on attempt to force a page number after already loaded" do
           subject.to_a
           subject.should be_loaded
-          lambda { subject.paginate! }.should raise_error(ActiveCollection::AlreadyLoadedError)
+          lambda { subject.page!(3) }.should raise_error(ActiveCollection::AlreadyLoadedError)
         end
 
         it "returns the same record on 'soft' paginate when already paginated" do

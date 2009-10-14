@@ -17,8 +17,8 @@ module ActiveCollection
       #     end
       # 
       # This will use the class Normal to do counts and finds.
-      def model(class_name)
-        (@model_class_name = class_name) && @model_class = nil
+      def model(model_name)
+        (@model_class_name = model_name) && @model_class = nil
       end
 
       # The actual member class.
@@ -42,10 +42,10 @@ module ActiveCollection
         model_class.human_name(*args).pluralize
       end
 
-      protected
-
       def model_class_name
-        @model_class_name || name.sub(/Collection$/,'')
+        @model_class_name ||
+          (superclass != ActiveCollection::Base && superclass.model_class_name) ||
+          name.sub(/Collection$/,'')
       end
     end
 

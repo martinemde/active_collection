@@ -1,30 +1,37 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-class Beer
+class Model
   def self.human_name(*args)
-    "Beer"
+    "Model"
   end
 
   def self.table_name
-    "beers"
+    "models"
   end
 end
 
-class BeerCollection < ActiveCollection::Base
+class ModelCollection < ActiveCollection::Base
 end
 
-class DunkelBeer
+class SpecialModel
   def self.human_name(*args)
-    "Dunkel Beer"
+    "Special Model"
   end
 
   def self.table_name
-    "dunkel_beers"
+    "special_models"
   end
 end
 
-class DarkBeerCollection < ActiveCollection::Base
-  model "DunkelBeer"
+class SpecialCollection < ActiveCollection::Base
+  model "SpecialModel"
+end
+
+class InheritedSpecialCollection < SpecialCollection
+end
+
+class OverloadedInheritedSpecialCollection < SpecialCollection
+  model "Model"
 end
 
 class BrokenCollection < ActiveCollection::Base
@@ -32,38 +39,54 @@ end
 
 describe ActiveCollection do
   context "(with standard name)" do
-    subject { BeerCollection.new }
+    subject { ModelCollection.new }
 
     it "has the correct model_class" do
-      subject.model_class.should == Beer
+      subject.model_class.should == Model
     end
 
     it "retrieves table_name from member class" do
-      subject.table_name.should == "beers"
+      subject.table_name.should == "models"
     end
 
     it "retrieves human_name from member class and pluralizes" do
-      subject.human_name(:locale => 'en-us').should == "Beers"
+      subject.human_name(:locale => 'en-us').should == "Models"
     end
   end
 
   context "(with model)" do
-    subject { DarkBeerCollection.new }
+    subject { SpecialCollection.new }
 
     it "uses the correct model class" do
-      subject.model_class.should == DunkelBeer
+      subject.model_class.should == SpecialModel
     end
 
     it "doesn't affect other classes" do
-      BeerCollection.new.model_class.should == Beer
+      ModelCollection.new.model_class.should == Model
     end
 
     it "retrieves table_name from member class" do
-      subject.table_name.should == "dunkel_beers"
+      subject.table_name.should == "special_models"
     end
 
     it "retrieves human_name from member class and pluralizes" do
-      subject.human_name(:locale => 'en-us').should == "Dunkel Beers"
+      subject.human_name(:locale => 'en-us').should == "Special Models"
+    end
+  end
+
+  context "(inherited and not overloaded)" do
+    subject { InheritedSpecialCollection.new }
+
+    it "maintains the same model class" do
+      subject.model_class.should == SpecialModel
+    end
+  end
+
+  context "(inherited and overloaded)" do
+    subject { OverloadedInheritedSpecialCollection.new }
+
+    it "maintains the same model class" do
+      subject.model_class.should == Model
     end
   end
 
