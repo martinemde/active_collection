@@ -104,7 +104,6 @@ module ActiveCollection
     # Pass methods on to the collection.
     def method_missing(method, *args)
       if Array.method_defined?(method) && !Object.method_defined?(method)
-        raise "#{method} received with #{args.join(', ')}"
         if block_given?
           collection.send(method, *args)  { |*block_args| yield(*block_args) }
         else
