@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{active_collection}
-  s.version = "0.2.4"
+  s.version = "0.2.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Martin Emde"]
-  s.date = %q{2009-10-12}
+  s.date = %q{2009-10-13}
   s.description = %q{A lazy-loading, Array-like collection proxy for ActiveRecord that understands conditions and paging.}
   s.email = %q{martin.emde@gmail.com}
   s.extra_rdoc_files = [
@@ -35,7 +35,9 @@ Gem::Specification.new do |s|
      "lib/active_collection/scope.rb",
      "lib/active_collection/serialization.rb",
      "spec/base_spec.rb",
+     "spec/includes_spec.rb",
      "spec/member_class_spec.rb",
+     "spec/order_spec.rb",
      "spec/pagination_spec.rb",
      "spec/proxy_spec.rb",
      "spec/spec.opts",
@@ -49,7 +51,9 @@ Gem::Specification.new do |s|
   s.summary = %q{A lazy-loading, Array-like collection proxy for ActiveRecord that understands conditions and paging.}
   s.test_files = [
     "spec/base_spec.rb",
+     "spec/includes_spec.rb",
      "spec/member_class_spec.rb",
+     "spec/order_spec.rb",
      "spec/pagination_spec.rb",
      "spec/proxy_spec.rb",
      "spec/spec_helper.rb"
